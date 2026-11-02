@@ -71,7 +71,9 @@ public final class Balance {
             throw new ArithmeticException("Переполнение при конвертации: " + amountInSubunits + " * " + priceFrom);
         }
 
-        long newAmount = (numerator + priceTo / 2) / priceTo;
+        // Округление с защитой от переполнения
+        long rounded = Math.addExact(numerator, priceTo / 2);
+        long newAmount = rounded / priceTo;
         return new Balance(newAmount, target);
     }
 
@@ -79,7 +81,7 @@ public final class Balance {
     public String toString() {
         long whole = amountInSubunits / 100;
         long frac  = amountInSubunits % 100;
-        return String.format("Баланс: %d.%02d %s", whole, frac, currency.getSymbol());
+        return String.format("%d.%02d %s", whole, frac, currency.getSymbol());
     }
 
     @Override
